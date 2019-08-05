@@ -1,9 +1,10 @@
-#GET
+# GET
 https://fixer-api.herokuapp.com/users - fetch all users.
 
-#Post
+# Post
 https://fixer-api.herokuapp.com/users
-params object
+
+# Params
 
 ```javascript
 {
