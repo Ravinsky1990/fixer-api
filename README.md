@@ -2,7 +2,7 @@
 https://fixer-api.herokuapp.com/users - fetch all users.
 
 # Post
-https://fixer-api.herokuapp.com/users
+https://fixer-api.herokuapp.com/search
 
 # Params
 
