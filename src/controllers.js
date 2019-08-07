@@ -5,9 +5,10 @@ const categorySchema = require('./models/category-model');
 mongoose.model('Category', categorySchema);
 
 const getUsers = async (ctx) => {
-    const result = await User.find({}).populate('category'); 
+    const result = await User.find({}).populate('category');
+    ctx.set('Access-Control-Allow-Origin', '*');
     ctx.body = {
-    users: result,
+        users: result,
     };
 };
 
