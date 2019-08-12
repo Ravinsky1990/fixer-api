@@ -76,7 +76,7 @@ const searchUsers = async (ctx) => {
 };
 
 const sighUp = async (ctx) => {
-  const { email, password, firstName, lastName } = ctx.request.body;
+  const { email, password, firstName, lastName, userName } = ctx.request.body;
 
   const salt = await bcrypt.genSaltSync(10);
   const passwordHash = await bcrypt.hash(password, salt);
@@ -88,6 +88,7 @@ const sighUp = async (ctx) => {
     password: passwordHash,
     firstName,
     lastName,
+    userName
   });
 
   // Save user
