@@ -1,39 +1,52 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    minlength: 2,
     trim: true,
+    required: [true, 'First email is required!'],
   },
   lastName: {
     type: String,
-    minlength: 2,
     trim: true,
+    required: [true, 'Last email is required!'],
   },
   userName: {
     type: String,
-    minlength: 2,
     trim: true,
   },
   email: {
     type: String,
+    unique: true,
+    required: [true, 'User email is required!'],
+    trim: true,
+    min: 6,
+    validate: {
+      validator(v) {
+        return /^(\S+)@([a-z0-9-]+)(\.)([a-z]{2,4})(\.?)([a-z]{0,4})+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid email!`,
+    },
+  },
+  password: {
+    type: String,
+    unique: true,
+    required: [true, 'User password is required!'],
+    min: 6,
   },
   country: {
     type: String,
-    minlength: 2,
     trim: true,
   },
   city: {
     type: String,
-    minlength: 2,
     trim: true,
   },
   mobilePhone: {
     type: String,
-    minlength: 6,
     trim: true,
   },
   category: [
@@ -55,5 +68,13 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
 });
+
+userSchema.methods.checkPassword = async function checkPassword(passwordToCheck) {
+  if (!passwordToCheck) return false;
+  if (!this.password) return false;
+
+  const isValid = await bcrypt.compare(passwordToCheck, this.password);
+  return isValid;
+};
 
 module.exports = mongoose.model('User', userSchema);

@@ -8,9 +8,9 @@ https://fixer-api.herokuapp.com/search
 
 ```javascript
 {
-    category: [Front-end, Back-end]
+    category: [Front-end: String, Back-end: String]
     text: String,
-    sort: [rating, price]
+    sort: [rating:String, price: String]
 }
 ```
 
