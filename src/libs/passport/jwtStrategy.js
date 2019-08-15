@@ -1,7 +1,9 @@
 const JwtStrategy = require('passport-jwt').Strategy;
+// eslint-disable-next-line prefer-destructuring
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const User = require('../../models/user-model');
 const dotenv = require('dotenv');
+const User = require('../../models/user-model');
+
 dotenv.config();
 
 const opts = {

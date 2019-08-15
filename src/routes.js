@@ -1,12 +1,15 @@
 const Router = require('koa-router');
+const passport = require('koa-passport');
 const ctrl = require('./controllers');
 
 const router = new Router();
 
-router.get('/users', ctrl.getUsers);
-router.post('/search', ctrl.searchUsers);
+router.post('/users', passport.authenticate('jwt', { session: false }), ctrl.searchUsers);
+router.get('/user/:id', passport.authenticate('jwt', { session: false }), ctrl.getUser);
 router.post('/sigh-up', ctrl.sighUp);
 router.post('/sigh-in', ctrl.sighIn);
-router.put('/user', ctrl.updateUser);
+router.put('photo', passport.authenticate('jwt', { session: false }));
+router.put('/user:id', passport.authenticate('jwt', { session: false }), ctrl.updateUser);
+
 
 module.exports = router;

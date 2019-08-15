@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const Koa = require('koa');
+const cors = require('@koa/cors');
 const dotenv = require('dotenv');
 const KoaRouter = require('koa-router');
 const bodyParser = require('koa-body');
@@ -13,7 +14,10 @@ passport.initialize();
 
 
 const app = new Koa();
-const router = new KoaRouter();
+const router = new KoaRouter({
+  prefix: '/api',
+});
+app.use(cors());
 
 app.use(bodyParser());
 

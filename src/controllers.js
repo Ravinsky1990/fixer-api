@@ -8,12 +8,19 @@ const sendMail = require('./utils/sendMail');
 
 mongoose.model('Category', categorySchema);
 
-const getUsers = async (ctx) => {
-  const result = await User.find({}).populate('category');
-  ctx.set('Access-Control-Allow-Origin', '*');
-  ctx.body = {
-    users: result,
-  };
+const getUser = async (ctx) => {
+  const { id } = ctx.params;
+  try {
+    const user = await User.findById(id);
+    ctx.body = {
+      user,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      error: err,
+    };
+  }
 };
 
 const searchUsers = async (ctx) => {
@@ -65,18 +72,25 @@ const searchUsers = async (ctx) => {
   }
 
   // get users
-
-  const result = await User.find(objToFind).sort({
-    [reqBody.sort]: -1,
-  }).populate('category');
-
-  ctx.body = {
-    users: result,
-  };
+  try {
+    const result = await User.find(objToFind).sort({
+      [reqBody.sort]: -1,
+    }).populate('category');
+    ctx.body = {
+      users: result,
+    };
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = {
+      error: err,
+    };
+  }
 };
 
 const sighUp = async (ctx) => {
-  const { email, password, firstName, lastName, userName } = ctx.request.body;
+  const {
+    email, password, firstName, lastName, userName,
+  } = ctx.request.body;
 
   const salt = await bcrypt.genSaltSync(10);
   const passwordHash = await bcrypt.hash(password, salt);
@@ -88,18 +102,18 @@ const sighUp = async (ctx) => {
     password: passwordHash,
     firstName,
     lastName,
-    userName
+    userName,
   });
 
   // Save user
 
   try {
     const savedUser = await user.save();
+    // delete savedUser.password;
     ctx.body = {
       user: savedUser,
     };
-
-    sendMail(savedUser.email, 'fixer@ex.com', {name: savedUser.firstName});
+    sendMail(savedUser.email, 'fixer@ex.com', { name: savedUser.firstName });
   } catch (error) {
     ctx.response.status = 400;
     ctx.body = {
@@ -123,6 +137,7 @@ const sighIn = async (ctx, next) => {
           id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
+          userName: user.userName,
         },
       };
     } else {
@@ -133,27 +148,29 @@ const sighIn = async (ctx, next) => {
   })(ctx, next);
 };
 
-const updateUser = async (ctx, next) => {
-  await passport.authenticate('jwt', async (err, user) => {
-    if (user) {
-      const { email } = ctx.request.body;
-      const dataToUpdate = { email };
-      // eslint-disable-next-line no-underscore-dangle
-      const updatedUser = await User.findByIdAndUpdate(user._id, dataToUpdate, { new: true });
-      ctx.body = {
-        user: updatedUser,
-      };
-    } else {
-      ctx.body = {
-        error: err,
-      };
-    }
-  })(ctx, next);
+const updateUser = async (ctx) => {
+  const { id } = ctx.params;
+  const updates = ctx.request.body;
+  try {
+    const user = await User.findByIdAndUpdate(id, updates, { new: true });
+    ctx.body = {
+      user,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      error: err,
+    };
+  }
+};
+
+const updateUserPhoto = () => {
+
 };
 
 module.exports = {
-  getUsers,
   searchUsers,
+  getUser,
   sighUp,
   sighIn,
   updateUser,

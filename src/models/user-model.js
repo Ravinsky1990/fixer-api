@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -69,12 +70,11 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.checkPassword = async function checkPassword(passwordToCheck) {
+// eslint-disable-next-line consistent-return
+userSchema.methods.checkPassword = function (passwordToCheck, cb) {
   if (!passwordToCheck) return false;
   if (!this.password) return false;
-
-  const isValid = await bcrypt.compare(passwordToCheck, this.password);
-  return isValid;
+  return bcrypt.compare(passwordToCheck, this.password, cb);
 };
 
 module.exports = mongoose.model('User', userSchema);
