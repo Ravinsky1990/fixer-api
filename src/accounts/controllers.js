@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const passport = require('koa-passport');
 const jwt = require('jsonwebtoken');
-const categorySchema = require('./models/category-model');
-const User = require('./models/user-model');
-const sendMail = require('./utils/sendMail');
+const categorySchema = require('./models/category');
+const User = require('./models/user');
+const sendMail = require('../utils/sendMail');
 
 mongoose.model('Category', categorySchema);
 
@@ -97,7 +97,7 @@ const sighUp = async (ctx) => {
 
   // Create user
 
-  const user = new User({
+  const userTosave = new User({
     email,
     password: passwordHash,
     firstName,
@@ -108,12 +108,11 @@ const sighUp = async (ctx) => {
   // Save user
 
   try {
-    const savedUser = await user.save();
-    // delete savedUser.password;
+    const user = await userTosave.save();
     ctx.body = {
-      user: savedUser,
+      user,
     };
-    sendMail(savedUser.email, 'fixer@ex.com', { name: savedUser.firstName });
+    sendMail(user.email, 'fixer@ex.com', { name: user.firstName });
   } catch (error) {
     ctx.response.status = 400;
     ctx.body = {
@@ -164,9 +163,9 @@ const updateUser = async (ctx) => {
   }
 };
 
-const updateUserPhoto = () => {
+// const updateUserPhoto = () => {
 
-};
+// };
 
 module.exports = {
   searchUsers,

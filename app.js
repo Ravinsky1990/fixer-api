@@ -6,7 +6,7 @@ const KoaRouter = require('koa-router');
 const bodyParser = require('koa-body');
 const mongoose = require('mongoose');
 const beautifulUnique = require('mongoose-beautiful-unique-validation');
-const appRoutes = require('./src/routes');
+const appRoutes = require('./src/accounts/routes');
 const passport = require('./src/libs/passport/index');
 
 dotenv.config();
@@ -31,7 +31,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 mongoose.plugin(beautifulUnique);
 
 
-router.use(appRoutes.routes());
+router.use('/accounts/', appRoutes.routes());
 app.use(router.routes());
 
 const { PORT } = process.env;
