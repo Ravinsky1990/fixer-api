@@ -31,7 +31,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 mongoose.plugin(beautifulUnique);
 
 
-router.use('/accounts/', appRoutes.routes());
+router.use('/accounts', appRoutes.routes());
 app.use(router.routes());
 
 const { PORT } = process.env;
