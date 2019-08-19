@@ -164,15 +164,26 @@ const updateUser = async (ctx) => {
 };
 
 const isUserExist = async (ctx) => {
-  const params = ctx.request.body;
-  try {
-    const user = await User.findOne(params);
+  const {userName, userEmail} = ctx.request.body;
+
+  const userNameExist = await User.find({userName});
+  const userEmailExist = await User.find({userEmail});
+
+  if(userNameExist.length !== 0){
     ctx.body = {
-      userId: user._id
-    };
-  } catch (err) {
-    ctx.status = 400;
+      result: 'User with this user-name is already exist!'
+    }
   }
+  if(userEmailExist.length !== 0){
+    ctx.body = {
+      result: 'User with this email is already exist!'
+    }
+  }
+
+  ctx.body = {
+    result: "ok!"
+  }
+  
 }
 
 // const updateUserPhoto = () => {
