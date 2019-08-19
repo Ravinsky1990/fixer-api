@@ -163,6 +163,18 @@ const updateUser = async (ctx) => {
   }
 };
 
+const isUserExist = async (ctx) => {
+  const params = ctx.request.body;
+  try {
+    const user = await User.findOne(params);
+    ctx.body = {
+      userId: user._id
+    };
+  } catch (err) {
+    ctx.status = 400;
+  }
+}
+
 // const updateUserPhoto = () => {
 
 // };
@@ -173,4 +185,5 @@ module.exports = {
   sighUp,
   sighIn,
   updateUser,
+  isUserExist
 };
