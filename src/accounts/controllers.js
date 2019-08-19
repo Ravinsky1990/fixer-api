@@ -164,26 +164,35 @@ const updateUser = async (ctx) => {
 };
 
 const isUserExist = async (ctx) => {
-  const {userName, userEmail} = ctx.request.body;
-
+  const { email, userName } = ctx.request.body;
   const userNameExist = await User.find({userName});
-  const userEmailExist = await User.find({userEmail});
-
-  if(userNameExist.length !== 0){
-    ctx.body = {
-      result: 'User with this user-name is already exist!'
-    }
-  }
-  if(userEmailExist.length !== 0){
-    ctx.body = {
-      result: 'User with this email is already exist!'
-    }
-  }
-
-  ctx.body = {
-    result: "ok!"
-  }
+  const userEmailExist = await User.find({email});
   
+  if(userNameExist.length>0){
+    if(userEmailExist.length>0){
+      ctx.body = {
+        result: "This user-name and email already exist!"
+      }
+    }else{
+      ctx.body = {
+        result: "This user-name exist!"
+      }
+    }
+  }else if(userEmailExist.length>0){
+    if(userNameExist.length>0){
+      ctx.body = {
+        result: "This user-name and email already exist!"
+      }
+    }else{
+      ctx.body = {
+        result: "This user-email exist!"
+      }
+    }
+  }else{
+    ctx.body = {
+      result: "ok"
+    }
+  }
 }
 
 // const updateUserPhoto = () => {
