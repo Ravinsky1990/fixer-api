@@ -20,6 +20,6 @@ module.exports = new LocalStrategy(opts, (req, email, password, done) => {
     if (!user.checkPassword(password)) {
       return done('incorrect password!', false);
     }
-    return user;
+    return done(null, user);
   });
 });
