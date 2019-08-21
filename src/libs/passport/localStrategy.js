@@ -20,13 +20,6 @@ module.exports = new LocalStrategy(opts, (req, email, password, done) => {
     if (!user.checkPassword(password)) {
       return done('incorrect password!', false);
     }
-
-    // eslint-disable-next-line no-unused-expressions
-    // user.checkPassword(password, (_err, res) => {
-    //   if (res) {
-    //     return done(null, user);
-    //   }
-    //   return done('incorrect password!', false);
-    // });
+    return user;
   });
 });
