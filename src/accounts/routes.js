@@ -12,6 +12,4 @@ router.put('photo', passport.authenticate('jwt', { session: false }));
 router.put('/user:id', passport.authenticate('jwt', { session: false }), ctrl.updateUser);
 router.post('/user', ctrl.isUserExist);
 
-
-
 module.exports = router;

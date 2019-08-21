@@ -68,13 +68,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  photo: {
+    type: String,
+    trim: true,
+    default: 'https://ui-avatars.com/api/?background=0D8ABC&color=fff',
+  },
 });
 
 // eslint-disable-next-line consistent-return
-userSchema.methods.checkPassword = function (passwordToCheck, cb) {
+userSchema.methods.checkPassword = function (passwordToCheck) {
   if (!passwordToCheck) return false;
   if (!this.password) return false;
-  return bcrypt.compare(passwordToCheck, this.password, cb);
+  return bcrypt.compareSync(passwordToCheck, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);

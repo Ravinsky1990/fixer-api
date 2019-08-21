@@ -140,6 +140,7 @@ const sighIn = async (ctx, next) => {
         },
       };
     } else {
+      ctx.response.status = 404;
       ctx.body = {
         error: err,
       };
@@ -165,35 +166,35 @@ const updateUser = async (ctx) => {
 
 const isUserExist = async (ctx) => {
   const { email, userName } = ctx.request.body;
-  const userNameExist = await User.find({userName});
-  const userEmailExist = await User.find({email});
-  
-  if(userNameExist.length>0){
-    if(userEmailExist.length>0){
+  const userNameExist = await User.find({ userName });
+  const userEmailExist = await User.find({ email });
+
+  if (userNameExist.length > 0) {
+    if (userEmailExist.length > 0) {
       ctx.body = {
-        result: "This user-name and email already exist!"
-      }
-    }else{
+        result: 'This user-name and email already exist!',
+      };
+    } else {
       ctx.body = {
-        result: "This user-name exist!"
-      }
+        result: 'This user-name exist!',
+      };
     }
-  }else if(userEmailExist.length>0){
-    if(userNameExist.length>0){
+  } else if (userEmailExist.length > 0) {
+    if (userNameExist.length > 0) {
       ctx.body = {
-        result: "This user-name and email already exist!"
-      }
-    }else{
+        result: 'This user-name and email already exist!',
+      };
+    } else {
       ctx.body = {
-        result: "This user-email exist!"
-      }
+        result: 'This user-email exist!',
+      };
     }
-  }else{
+  } else {
     ctx.body = {
-      result: "ok"
-    }
+      result: 'ok',
+    };
   }
-}
+};
 
 // const updateUserPhoto = () => {
 
@@ -205,5 +206,5 @@ module.exports = {
   sighUp,
   sighIn,
   updateUser,
-  isUserExist
+  isUserExist,
 };
