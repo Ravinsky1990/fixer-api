@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -14,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, 'Last email is required!'],
+  },
+  fullName: {
+    type: String,
+    trim: true,
   },
   userName: {
     type: String,
@@ -81,5 +86,6 @@ userSchema.methods.checkPassword = function (passwordToCheck) {
   if (!this.password) return false;
   return bcrypt.compareSync(passwordToCheck, this.password);
 };
+
 
 module.exports = mongoose.model('User', userSchema);

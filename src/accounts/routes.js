@@ -4,7 +4,7 @@ const ctrl = require('./controllers');
 
 const router = new Router();
 
-router.post('/users', passport.authenticate('jwt', { session: false }), ctrl.searchUsers);
+router.post('/users', ctrl.searchUsers);
 router.get('/user/:id', passport.authenticate('jwt', { session: false }), ctrl.getUser);
 router.post('/sigh-up', ctrl.sighUp);
 router.post('/sigh-in', ctrl.sighIn);

@@ -24,13 +24,11 @@ const getUser = async (ctx) => {
 };
 
 const searchUsers = async (ctx) => {
-  // variables to use in queries
-
   const reqBody = ctx.request.body;
-  const categoriesId = {
-    front: '5d41f60825903907bc86f18e',
-    back: '5d41f60825903907bc86f18f',
-  };
+  // const categoriesId = {
+  //   front: '5d41f60825903907bc86f18e',
+  //   back: '5d41f60825903907bc86f18f',
+  // };
 
   const searchText = /./;
   const objToFind = {};
@@ -38,11 +36,7 @@ const searchUsers = async (ctx) => {
   // set category
 
   if (reqBody.category) {
-    if (reqBody.category === 'Front-end') {
-      objToFind.category = categoriesId.front;
-    } else {
-      objToFind.category = categoriesId.back;
-    }
+    objToFind.category = reqBody.category;
   }
 
   // set search text
@@ -61,12 +55,20 @@ const searchUsers = async (ctx) => {
   } else {
     objToFind.$or = [{
       firstName: {
-        $regex: new RegExp(reqBody.text, 'i'),
+        $regex: new RegExp(reqBody.text),
+        $options: 'i',
       },
     },
     {
       lastName: {
-        $regex: new RegExp(reqBody.text, 'i'),
+        $regex: new RegExp(reqBody.text),
+        $options: 'i',
+      },
+    },
+    {
+      fullName: {
+        $regex: new RegExp(reqBody.text),
+        $options: 'i',
       },
     }];
   }
@@ -103,6 +105,7 @@ const sighUp = async (ctx) => {
     firstName,
     lastName,
     userName,
+    fullName: firstName + lastName,
   });
 
   // Save user
