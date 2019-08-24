@@ -9,17 +9,9 @@ const sendMail = require('../utils/sendMail');
 mongoose.model('Category', categorySchema);
 
 const getUser = async (ctx) => {
-  const { id } = ctx.params;
-  try {
-    const user = await User.findById(id);
-    ctx.body = {
-      user,
-    };
-  } catch (err) {
-    ctx.status = 400;
-    ctx.body = {
-      error: err,
-    };
+  delete ctx.state.user._doc.password
+  ctx.body = {
+    user: ctx.state.user
   }
 };
 
@@ -30,7 +22,6 @@ const searchUsers = async (ctx) => {
   //   back: '5d41f60825903907bc86f18f',
   // };
 
-  const searchText = /./;
   const objToFind = {};
 
   // set category
@@ -41,43 +32,28 @@ const searchUsers = async (ctx) => {
 
   // set search text
 
-  if (reqBody.text === '') {
-    objToFind.$or = [{
+  objToFind.$or = [{
       firstName: {
-        $regex: searchText,
-      },
-    },
-    {
-      lastName: {
-        $regex: searchText,
-      },
-    }];
-  } else {
-    objToFind.$or = [{
-      firstName: {
-        $regex: new RegExp(reqBody.text),
+        $regex: reqBody.keyword,
         $options: 'i',
       },
     },
     {
       lastName: {
-        $regex: new RegExp(reqBody.text),
+        $regex: reqBody.keyword,
         $options: 'i',
       },
     },
-    {
-      fullName: {
-        $regex: new RegExp(reqBody.text),
-        $options: 'i',
-      },
-    }];
-  }
+  ];
+  
 
   // get users
   try {
     const result = await User.find(objToFind).sort({
       [reqBody.sort]: -1,
-    }).populate('category');
+    })
+    .select('-password')
+    .populate('category');
     ctx.body = {
       users: result,
     };
@@ -89,7 +65,7 @@ const searchUsers = async (ctx) => {
   }
 };
 
-const sighUp = async (ctx) => {
+const signUp = async (ctx) => {
   const {
     email, password, firstName, lastName, userName,
   } = ctx.request.body;
@@ -105,13 +81,13 @@ const sighUp = async (ctx) => {
     firstName,
     lastName,
     userName,
-    fullName: firstName + lastName,
   });
 
   // Save user
 
   try {
     const user = await userTosave.save();
+    delete user._doc.password;
     ctx.body = {
       user,
     };
@@ -124,7 +100,7 @@ const sighUp = async (ctx) => {
   }
 };
 
-const sighIn = async (ctx, next) => {
+const signIn = async (ctx, next) => {
   await passport.authenticate('local', (err, user) => {
     if (user) {
       const payload = {
@@ -206,8 +182,8 @@ const isUserExist = async (ctx) => {
 module.exports = {
   searchUsers,
   getUser,
-  sighUp,
-  sighIn,
+  signUp,
+  signIn,
   updateUser,
   isUserExist,
 };
