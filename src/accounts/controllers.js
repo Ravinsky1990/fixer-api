@@ -4,9 +4,8 @@ const passport = require('koa-passport');
 const jwt = require('jsonwebtoken');
 const categorySchema = require('./models/category');
 const User = require('./models/user');
+const Category = require('./models/category')
 const sendMail = require('../utils/sendMail');
-
-mongoose.model('Category', categorySchema);
 
 const getUser = async (ctx) => {
   delete ctx.state.user._doc.password
@@ -179,6 +178,14 @@ const isUserExist = async (ctx) => {
 
 // };
 
+const getCategories = async(ctx, next) => {
+  const categories = await Category.find({});
+  ctx.body = {
+    categories
+  }
+};
+
+
 module.exports = {
   searchUsers,
   getUser,
@@ -186,4 +193,5 @@ module.exports = {
   signIn,
   updateUser,
   isUserExist,
+  getCategories
 };
