@@ -10,7 +10,7 @@ module.exports = (folder, file) => new Promise((resolve, reject) => {
 
   s3.upload(
     {
-      Bucket: 
+      Bucket: process.env.S3_BUKET_NAME,
       Key: filename,
       Body: fs.createReadStream(file.path),
     },

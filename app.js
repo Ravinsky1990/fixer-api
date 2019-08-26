@@ -19,7 +19,9 @@ const router = new KoaRouter({
 });
 app.use(cors());
 
-app.use(bodyParser());
+app.use(bodyParser({
+    multipart: true,
+}));
 
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,

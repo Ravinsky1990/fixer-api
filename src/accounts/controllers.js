@@ -6,6 +6,7 @@ const categorySchema = require('./models/category');
 const User = require('./models/user');
 const Category = require('./models/category')
 const sendMail = require('../utils/sendMail');
+const uploadS3 = require('../utils/uploadS3')
 
 const getUser = async (ctx) => {
   delete ctx.state.user._doc.password
@@ -174,11 +175,16 @@ const isUserExist = async (ctx) => {
   }
 };
 
-// const updateUserPhoto = () => {
-
-// };
+const updateUserPhoto = async (ctx, next) => {
+  const photo = await uploadS3(config.get('aws').userPhotoFolder, ctx.request.files.photo);
+  await User.findByIdAndUpdate(ctx.state.user._id, { photo });
+  ctx.body = {
+    photo,
+  }
+};
 
 const getCategories = async(ctx, next) => {
+
   const categories = await Category.find({});
   ctx.body = {
     categories
@@ -193,5 +199,6 @@ module.exports = {
   signIn,
   updateUser,
   isUserExist,
-  getCategories
+  getCategories,
+  updateUserPhoto
 };
