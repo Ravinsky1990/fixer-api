@@ -13,5 +13,4 @@ fixtures
   .connect(url)
   .then(() => fixtures.unload())
   .then(() => fixtures.load())
-  .catch(e => console.error(e))
   .finally(() => fixtures.disconnect());

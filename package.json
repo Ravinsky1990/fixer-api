@@ -9,7 +9,8 @@
     "start:dev": "nodemon app.js",
     "load:users": "node src/mongo-fixtures/load-users.js",
     "load:categories": "node src/mongo-fixtures/load-categories.js",
-    "lint": "eslint ./**/*.js app.js"
+    "lint": "eslint ./**/*.js app.js",
+    "lint:fix": "eslint ./**/*.js app.js --fix"
   },
   "keywords": [],
   "author": "",

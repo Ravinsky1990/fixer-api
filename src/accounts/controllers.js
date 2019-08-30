@@ -1,18 +1,16 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const passport = require('koa-passport');
 const jwt = require('jsonwebtoken');
-const categorySchema = require('./models/category');
 const User = require('./models/user');
-const Category = require('./models/category')
+const Category = require('./models/category');
 const sendMail = require('../utils/sendMail');
-const uploadS3 = require('../utils/uploadS3')
+const uploadS3 = require('../utils/uploadS3');
 
 const getUser = async (ctx) => {
-  delete ctx.state.user._doc.password
+  delete ctx.state.user._doc.password;
   ctx.body = {
-    user: ctx.state.user
-  }
+    user: ctx.state.user,
+  };
 };
 
 const searchUsers = async (ctx) => {
@@ -33,27 +31,27 @@ const searchUsers = async (ctx) => {
   // set search text
 
   objToFind.$or = [{
-      firstName: {
-        $regex: reqBody.keyword,
-        $options: 'i',
-      },
+    firstName: {
+      $regex: reqBody.keyword,
+      $options: 'i',
     },
-    {
-      lastName: {
-        $regex: reqBody.keyword,
-        $options: 'i',
-      },
+  },
+  {
+    lastName: {
+      $regex: reqBody.keyword,
+      $options: 'i',
     },
+  },
   ];
-  
+
 
   // get users
   try {
     const result = await User.find(objToFind).sort({
       [reqBody.sort]: -1,
     })
-    .select('-password')
-    .populate('category');
+      .select('-password')
+      .populate('category');
     ctx.body = {
       users: result,
     };
@@ -100,7 +98,7 @@ const signUp = async (ctx) => {
   }
 };
 
-const signIn = async (ctx, next) => {
+const signIn = async (ctx) => {
   await passport.authenticate('local', (err, user) => {
     if (user) {
       const payload = {
@@ -124,7 +122,7 @@ const signIn = async (ctx, next) => {
         error: err,
       };
     }
-  })(ctx, next);
+  })(ctx);
 };
 
 const updateUser = async (ctx) => {
@@ -175,20 +173,19 @@ const isUserExist = async (ctx) => {
   }
 };
 
-const updateUserPhoto = async (ctx, next) => {
-  const photo = await uploadS3(config.get('aws').userPhotoFolder, ctx.request.files.photo);
+const updateUserPhoto = async (ctx) => {
+  const photo = await uploadS3('userPhotos', ctx.request.files.photo);
   await User.findByIdAndUpdate(ctx.state.user._id, { photo });
   ctx.body = {
     photo,
-  }
+  };
 };
 
-const getCategories = async(ctx, next) => {
-
+const getCategories = async (ctx) => {
   const categories = await Category.find({});
   ctx.body = {
-    categories
-  }
+    categories,
+  };
 };
 
 
@@ -200,5 +197,5 @@ module.exports = {
   updateUser,
   isUserExist,
   getCategories,
-  updateUserPhoto
+  updateUserPhoto,
 };

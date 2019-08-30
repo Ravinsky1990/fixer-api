@@ -11,6 +11,6 @@ router.post('/sign-in', ctrl.signIn);
 router.put('/photo', passport.authenticate('jwt', { session: false }), ctrl.updateUserPhoto);
 router.put('/user:id', passport.authenticate('jwt', { session: false }), ctrl.updateUser);
 router.post('/check-user', ctrl.isUserExist);
-router.get('/categories', ctrl.getCategories)
+router.get('/categories', ctrl.getCategories);
 
 module.exports = router;
